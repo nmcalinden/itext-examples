@@ -1,0 +1,36 @@
+    public byte[] generatePdf() throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        Document document = initDoc(os);
+
+        PdfFont helveticaFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+        PdfFont helveticaBoldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+
+        Paragraph p = new Paragraph();
+        String s = "All text is written in red, except the letters b and g; they are written in blue and green.";
+        for (int i = 0; i < s.length(); i++) {
+            p.add(returnCorrectColor(s.charAt(i), helveticaFont, helveticaBoldFont));
+        }
+
+        document.add(p);
+        document.close();
+
+        ByteArrayInputStream iS = new ByteArrayInputStream(os.toByteArray());
+        return IOUtils.toByteArray(iS);
+    }
+
+    private static Text returnCorrectColor(char letter, PdfFont helveticaFont, PdfFont helveticaBoldFont) {
+        if (letter == 'b') {
+            return new Text("b")
+                    .setFontColor(ColorConstants.BLUE)
+                    .setFont(helveticaBoldFont);
+        } else if (letter == 'g') {
+            return new Text("g")
+                    .setFontColor(ColorConstants.GREEN)
+                    .setFont(helveticaFont)
+                    .setItalic();
+        } else {
+            return new Text(String.valueOf(letter))
+                    .setFontColor(ColorConstants.RED)
+                    .setFont(helveticaFont);
+        }
+    }
